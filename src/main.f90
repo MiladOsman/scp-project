@@ -18,6 +18,7 @@ program Shooting_project_Milad_Osman
     !     print*,grid(i)
     ! enddo
     
+    github
 
     call threepoint(a,b,n)
 
