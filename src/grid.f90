@@ -1,4 +1,4 @@
-! Create a grid of a size that can be decided by the user
+! Creates a grid of a size that can be decided by the user
 
 module grid
 

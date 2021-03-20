@@ -10,7 +10,7 @@ program Shooting_project_Milad_Osman
 
     a = -3
     b = 3
-    n = 7
+    n = 70
 
     call makegrid(a,b,n,grid)
 
