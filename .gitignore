@@ -2,7 +2,6 @@
 *.o
 *.app
 *.mod
-.DS_Store
 myapp
 
 .vscode/*
@@ -22,7 +21,6 @@ myapp
 
 # Icon must end with two \r
 Icon
-
 
 # Thumbnails
 ._*

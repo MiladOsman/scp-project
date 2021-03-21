@@ -10,16 +10,14 @@ program Shooting_project_Milad_Osman
 
     a = -3
     b = 3
-    n = 70
+    n = 7
 
-    call makegrid(a,b,n,grid)
+    ! call makegrid(a,b,n,grid)
 
-    do i=1,n
-        print*,grid(i)
-    enddo
-    
-    
+    ! do i=1,n
+    !     print*,grid(i)
+    ! enddo
 
-    ! call threepoint(a,b,n)
+    call threepoint(a,b,n)
 
 end program Shooting_project_Milad_Osman

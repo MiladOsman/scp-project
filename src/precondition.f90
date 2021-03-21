@@ -1,3 +1,5 @@
+! Starts de three-point for the preconditioning of the shooting method
+
 module precondition
 
     use diagonalization
@@ -19,9 +21,9 @@ contains
         real(8)             :: s(n,n)       ! S matrix
         real(8)             :: v(n,n)       ! V matrix
         real(8)             :: l(n,n)       ! L matrix
-        real(8)             :: values(n)    ! eigenvalues
-        real(8)             :: vectors(n,n) ! eigenvectors
-        character(5)        :: test         !
+        real(8)             :: values(n)    ! Eigenvalues
+        real(8)             :: vectors(n,n) ! Eigenvectors
+        character(5)        :: numbers      ! Used for the format string
         
         h = ( dble(b) - dble(a) ) / dble(n)
 
@@ -42,13 +44,16 @@ contains
 
         call diagonalize(l,vectors,values)
 
+        ! Turn integer into character for format string
+        write(numbers, '(i0)') n
+
         print *,'* Eigenvectors:'
         do i=1,n
-            print '(100f9.4)',vectors(i,:)
+            print '('//numbers//'f9.4)', vectors(i,:)
         end do
 
-        print *,'* Eigenvalues:'
-        print '(100f10.4)',values
+        print *, '* Eigenvalues:'
+        print '('//numbers//'f10.4)', values
 
     end subroutine threepoint
     
