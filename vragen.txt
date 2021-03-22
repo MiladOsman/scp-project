@@ -1,7 +1,1 @@
 coarse mesh first, but should i then get a fine mesh?
-
-is there a way i can check these first results?
-
-how can i put lapack and/or blas into the makefile?
-
-how to use the grid mentioned in II.2?

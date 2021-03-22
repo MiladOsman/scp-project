@@ -1,3 +1,4 @@
+! Shooting project - Milad Osman
 ! Creates a grid of a size that can be decided by the user
 
 module grid

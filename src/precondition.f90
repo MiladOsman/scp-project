@@ -1,4 +1,5 @@
-! Starts de three-point for the preconditioning of the shooting method
+! Shooting project - Milad Osman
+! Starts de three-point scheme for the preconditioning of the shooting method
 
 module precondition
 
