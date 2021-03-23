@@ -4,6 +4,7 @@
 module precondition
 
     use diagonalization
+    use output
 
     implicit none
     save
@@ -12,21 +13,22 @@ module precondition
     
 contains
 
-    subroutine threepoint(a,b,n)
+    subroutine threepoint(n, h, e, y)
 
-        integer, intent(in) :: a,b          ! Boundries of the interval
-        integer, intent(in) :: n            ! Number of grid points
+        integer, intent(in)  :: n            ! Size of grid
+        real(8), intent(in)  :: h            ! Distance between 2 grid points
+        real(8), intent(out), allocatable :: y(:)         ! Used for integration
+        real(8), intent(out) :: e         ! Used for integration
 
-        integer             :: i            ! Loop index
-        real(8)             :: h            ! Distance between 2 grid points
-        real(8)             :: s(n,n)       ! S matrix
-        real(8)             :: v(n,n)       ! V matrix
-        real(8)             :: l(n,n)       ! L matrix
-        real(8)             :: values(n)    ! Eigenvalues
-        real(8)             :: vectors(n,n) ! Eigenvectors
-        character(5)        :: numbers      ! Used for the format string
-        
-        h = ( dble(b) - dble(a) ) / dble(n)
+        integer              :: i            ! Loop index
+        real(8)              :: s(n,n)       ! S matrix
+        real(8)              :: v(n,n)       ! V matrix
+        real(8)              :: l(n,n)       ! L matrix
+        real(8)              :: values(n)    ! Eigenvalues
+        real(8)              :: vectors(n,n) ! Eigenvectors
+        character(5)         :: numbers      ! Used for the format string
+
+        allocate( y(n) )
 
         s = 0._8
 
@@ -48,13 +50,19 @@ contains
         ! Turn integer into character for format string
         write(numbers, '(i0)') n
 
-        print *,'* Eigenvectors:'
-        do i=1,n
-            print '('//numbers//'f9.4)', vectors(i,:)
-        end do
+        ! print *,'* Eigenvectors:'
+        ! do i=1,n
+        !     print '('//numbers//'f9.4)', vectors(i,:)
+        ! end do
 
-        print *, '* Eigenvalues:'
-        print '('//numbers//'f10.4)', values
+        y = vectors(:,1)
+
+        ! call out(y)
+
+        ! print *, '* Eigenvalues:'
+        ! print '('//numbers//'f10.4)', values
+
+        e = values(1)
 
     end subroutine threepoint
     

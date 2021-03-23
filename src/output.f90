@@ -12,6 +12,7 @@ module output
     interface out
         module procedure integer_output
         module procedure real_output
+        module procedure character_output
         module procedure one_d_array
         module procedure two_d_array
     end interface 
@@ -26,7 +27,7 @@ contains
         print *, a
 
     end subroutine integer_output
- !------------------------------------------------
+ !------------------------------------------------!
     
     ! Prints real
     subroutine real_output(a)
@@ -36,7 +37,17 @@ contains
         print *, a
 
     end subroutine real_output
- !------------------------------------------------
+ !------------------------------------------------!
+
+    ! Prints characters
+    subroutine character_output(a)
+
+        character(:), allocatable :: a 
+
+        print *, a
+
+    end subroutine character_output
+ !------------------------------------------------!
 
     ! Prints 1 dimenstional array
     subroutine one_d_array(a)
@@ -50,7 +61,7 @@ contains
         end do
 
     end subroutine one_d_array
- !------------------------------------------------
+ !------------------------------------------------!
 
     ! Prints 2 dimenstional array
     subroutine two_d_array(a)
@@ -59,12 +70,12 @@ contains
         
         integer             :: i   
 
-        do i=1, size(a,1)
+        do i=1, size(a, 1)
             print *, a(i,:)
         end do
 
     end subroutine two_d_array
- !------------------------------------------------
+ !------------------------------------------------!
 
     !
     subroutine save()
@@ -72,13 +83,13 @@ contains
  
 
     end subroutine save
- !------------------------------------------------  
+ !------------------------------------------------!  
 
     !
     subroutine plot()
 
 
     end subroutine plot
-    
+
 end module output
 

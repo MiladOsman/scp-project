@@ -1,1 +1,1 @@
-coarse mesh first, but should i then get a fine mesh?
+how can mesh(n) become larger than n?
