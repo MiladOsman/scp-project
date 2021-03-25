@@ -8,24 +8,22 @@ program Shooting_project_Milad_Osman
     implicit none
     
     real(8), allocatable :: grid(:), y(:)
-    real(8) h,e,yleft,yright
+    real(8) h,e
     integer :: a,b,n
 
     a = 0
     b = 1
     n = 11
 
-
     call makegrid(a, b, n, h, grid)
 
     call threepoint(n, h, e, y)
 
-    yleft = yin(h, e, y)
-    yright = yout(h, e, y)
+    call yleft(h, e, y)
 
-    print*,yleft,yright
+    ! call out(y)
 
-    if (yleft==yright)print*,'hallo'
+
     
 
 end program Shooting_project_Milad_Osman

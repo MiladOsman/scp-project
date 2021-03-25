@@ -1,19 +1,31 @@
-! Shooting project - Milad Osman
-!
+! ! Shooting project - Milad Osman
+! !
 
-module normalisation
+! module normalisation
 
-    implicit none
-    save
-    private 
-    public normalise
+!     use integration
+
+!     implicit none
+!     save
+!     private 
+!     public normalise
     
-contains
+! contains
 
-    subroutine normalise()
+!     subroutine normalise(a, b, h, y)
 
-        
+!         integer, inent
+!         real(8), intent(in)    :: h ! Eigenfunction/vector
+!         real(8), intent(inout) :: y(:) ! Eigenfunction/vector
+!         real(8), intent(out)   :: norm ! Normalisation factor
 
-    end subroutine normalise
+!         y = abs(y**2)
+
+!         call Newton_cotes(y,h)
+
+
+
+
+!     end subroutine normalise
     
-end module normalisation
+! end module normalisation

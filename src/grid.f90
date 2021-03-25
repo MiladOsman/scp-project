@@ -27,7 +27,7 @@ contains
 
         ! mesh(1) = dble(a)
         
-        mesh = (/ (h*i + dble(a), i=0, n) /) 
+        mesh = (/ ( h*i + dble(a), i=0, n ) /) 
 
         ! call out(h)
         ! print*,'\'

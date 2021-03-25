@@ -5,33 +5,31 @@ module shooting
 
     use integration
     use grid
+    use output
 
     implicit none
     save
     private 
-    public yin, yout
+    public yleft, yright
     
 contains
 
-    real(8) function yin(h, e, y)
+    subroutine yleft(h, e, y)
 
-        real(8), intent(in) :: y(:)    ! Eigenvector
+        real(8), intent(in) :: y(:)    ! Eigenvector/function
         real(8), intent(in) :: h       ! Distance between 2 grid points
         real(8), intent(in) :: e       ! Estimated energy/eigenvalue
 
         integer             :: i       ! Loop index
 
-        yin = 0._8
+        i=3
 
-        do i=1, 6
-            yin = yin - y(i) + e * h**2 * y(6) + 2*y(6)
-            print*,y(i),'LLLLLL',i
-        end do
+        ! call out( y( size(y)-1 ) )
     
-    end function yin
+    end subroutine yleft
  !------------------------------------------------!
 
-    real(8) function yout(h, e, y)
+    real(8) function yright(h, e, y)
 
         real(8), intent(in) :: y(:)    ! Eigenvector
         real(8), intent(in) :: h       ! Distance between 2 grid points
@@ -39,14 +37,9 @@ contains
 
         integer             :: i       ! Loop index
 
-        yout = 0._8
-
-        do i=11, 6, -1
-            yout = yout - y(i) + e * h**2 * y(6) + 2*y(6)
-            print*,y(i),'RRRRRR',i
-        end do
     
-    end function yout
+    
+    end function yright
  !------------------------------------------------!
 
 
