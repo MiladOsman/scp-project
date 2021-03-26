@@ -48,19 +48,19 @@ contains
         call diagonalize(l,vectors,values)
 
         ! Turn integer into character for format string
-        write(numbers, '(i0)') n
+        ! write(numbers, '(i0)') n
 
-        print *,'* Eigenvectors:'
-        do i=1,n
-            print '('//numbers//'f9.4)', vectors(i,:)
-        end do
+        ! print *,'* Eigenvectors:'
+        ! do i=1,n
+        !     print '('//numbers//'f9.4)', vectors(i,:)
+        ! end do
 
         y = vectors(:,1)
 
         ! call out(y)
 
-        print *, '* Eigenvalues:'
-        print '('//numbers//'f10.4)', values
+        ! print *, '* Eigenvalues:'
+        ! print '('//numbers//'f10.4)', values
 
         e = values(1)
 

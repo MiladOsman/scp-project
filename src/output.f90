@@ -27,6 +27,7 @@ contains
         print *, a
 
     end subroutine integer_output
+
  !------------------------------------------------!
     
     ! Prints real
@@ -37,6 +38,7 @@ contains
         print *, a
 
     end subroutine real_output
+
  !------------------------------------------------!
 
     ! Prints characters
@@ -47,6 +49,7 @@ contains
         print *, a
 
     end subroutine character_output
+
  !------------------------------------------------!
 
     ! Prints 1 dimenstional array
@@ -61,6 +64,7 @@ contains
         end do
 
     end subroutine one_d_array
+
  !------------------------------------------------!
 
     ! Prints 2 dimenstional array
@@ -75,6 +79,7 @@ contains
         end do
 
     end subroutine two_d_array
+
  !------------------------------------------------!
 
     !
@@ -83,6 +88,7 @@ contains
  
 
     end subroutine save
+    
  !------------------------------------------------!  
 
     !

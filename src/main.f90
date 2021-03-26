@@ -21,8 +21,10 @@ program Shooting_project_Milad_Osman
 
     call yleft(h, e, y)
 
-    ! call out(y)
-
+    ! call out(y(3))
+    ! call out(e)
+    ! call out(grid(6))
+    ! call out( size(y) )
 
     
 

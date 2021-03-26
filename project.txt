@@ -11,3 +11,5 @@ Maybe start with plain wave, without potential
 For matching derivative is needed, with routine
 
 Equation 14 has a typo with the derivatives
+
+mischien nog v(x) bij L algemener maken in 3point

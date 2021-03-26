@@ -1,3 +1,4 @@
+! Shooting project - Milad Osman
 ! I did not write this module
 
 module integration
@@ -5,12 +6,11 @@ module integration
    implicit none 
    save
    private
+   public newton_cotes 
 
-   public :: Newton_cotes 
+contains
 
-   contains
-
-   subroutine Newton_cotes(f,h,a,b,v_int)
+   subroutine newton_cotes(f,h,a,b,v_int)
 
    ! evaluates an integral over a 1-dimensional function f, tabulated on n equidistant grid 
    ! using composite Newton-Cotes formulas. The subroutine checks the number of grid-points and 
@@ -93,27 +93,7 @@ module integration
 
    v_int = v_int * prefactor
 
-   end subroutine
- !------------------------------------------------!
-
-
-   ! real(8) function evaluate_integral(x, func)
-
-   !    real(8), intent(in) :: x(:)
-   !    real(8), intent(in) :: phii(:)
-   !    real(8), intent(in) :: weight(:)
-
-   !    integer :: i
-   !    integer :: j
-
-   !    evaluate_integral = 0._8
-
-   !    ! Sum by calling the function for each iteration and multiplying it with the weights
-   !    do i=1, size(x)
-   !       evaluate_integral = evaluate_integral + func(i)
-   !    end do
-
-   ! end function evaluate_integral
+   end subroutine 
 
 end module integration 
 
