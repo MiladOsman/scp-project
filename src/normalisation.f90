@@ -1,31 +1,34 @@
-! ! Shooting project - Milad Osman
-! !
+! Shooting project - Milad Osman
+!
 
-! module normalisation
+module normalisation
 
-!     use integration
+    use integration
 
-!     implicit none
-!     save
-!     private 
-!     public normalise
+    implicit none
+    save
+    private 
+    public normalise
     
-! contains
+contains
 
-!     subroutine normalise(a, b, h, y)
+    subroutine normalise(a, b, h, y)
 
-!         integer, inent
-!         real(8), intent(in)    :: h ! Eigenfunction/vector
-!         real(8), intent(inout) :: y(:) ! Eigenfunction/vector
-!         real(8), intent(out)   :: norm ! Normalisation factor
+        integer, intent(in)    :: a, b     ! Starting and ending point
+        real(8), intent(in)    :: h        ! Distance between 2 grid points
+        real(8), intent(inout) :: y(:)     ! Function to be normalised
+        
+        real(8)                :: integral ! Integral needed for normalisation
+        real(8)                :: norm     ! Normalisation factor
 
-!         y = abs(y**2)
+        y = abs(y**2)
 
-!         call Newton_cotes(y,h)
+        call newton_cotes(y, h, a, b, integral)
 
+        norm = sqrt( 1._8 / integral )
 
+        y = y * norm
 
-
-!     end subroutine normalise
+    end subroutine normalise
     
-! end module normalisation
+end module normalisation
