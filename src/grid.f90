@@ -25,9 +25,13 @@ contains
 
         allocate(mesh(n))
 
-        ! mesh(1) = dble(a)
+        mesh(1) = dble(a)
         
-        mesh = (/ ( h*i + dble(a), i=0, n ) /) 
+        ! mesh = (/ ( h*i + dble(a), i=0, n-1 ) /) 
+
+        do i=2, n+1
+            mesh(i) = (i - 1) * h
+        end do
 
         ! call out(h)
         ! print*,'\'

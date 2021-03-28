@@ -11,8 +11,8 @@ program Shooting_project_Milad_Osman
     real(8), allocatable :: y(:)
 
     a = 0
-    b = 1
-    n = 50
+    b = 2
+    n = 100
 
     call solve(a, b, n, e, y)
     

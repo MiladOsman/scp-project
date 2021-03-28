@@ -17,60 +17,87 @@ module numerical_schroedinger
     
 contains
 
-    subroutine solve(a, b, n, e, y)
+    subroutine solve(a, b, n, e_next, y)
 
         !
 
-        integer, intent(in)               :: a, b      ! The start and end point of the interval
-        integer, intent(in)               :: n         ! Number of points the grid should have
-        real(8), intent(out)              :: e         ! Final eigenvalue
-        real(8), intent(out), allocatable :: y(:)      ! Final eigenvector
+        integer, intent(in)               :: a, b           ! The start and end point of the interval
+        integer, intent(in)               :: n              ! Number of points the grid should have
+        real(8), intent(out)              :: e_next         ! Final eigenvalue
+        real(8), intent(out), allocatable :: y(:)           ! Final eigenvector
         
-        real(8)                           :: h         ! Space between 2 grid points
-        real(8), allocatable              :: mesh(:)   ! Discretised space
-        real(8)                           :: e_prev    ! Eigenvalue from threepoint
-        real(8), allocatable              :: y3(:)     ! Eigenvector from threepoint
-        real(8), allocatable              :: yleft(:)  ! Inward eigenvector on subinterval
-        real(8), allocatable              :: yright(:) ! Outward eigenvector on subinterval
-        integer i
-        real(8) e_next
-        real(8)                           :: eps = 1d-15 !
-
-        ! call out(eps)
-
-        ! allocate( yleft(6), yright(6) )
+        real(8)                           :: h              ! Space between 2 grid points
+        real(8), allocatable              :: mesh(:)        ! Discretised space
+        real(8)                           :: e_prev         ! Eigenvalue from threepoint
+        ! real(8)                           :: e_next         ! Eigenvalue after correction
+        real(8), allocatable              :: y3(:)          ! Eigenvector from threepoint
+        real(8), allocatable              :: yleft(:)       ! Inward eigenvector on subinterval
+        real(8), allocatable              :: yright(:)      ! Outward eigenvector on subinterval
+        real(8), allocatable              :: yleft_norm(:)  ! Normalised outward eigenvector
+        real(8), allocatable              :: yright_norm(:) ! Normalised inward eigenvector
+        integer                           :: i              ! Loop index
+        integer                           :: protection     !
+        real(8)                           :: eps = 1d-15     ! Tolerance 
 
         call makegrid(a, b, n, h, mesh)
+        
 
         call threepoint(n, h, e_prev, y3)
 
-        ! call out(e_prev)
-        call shoot(h, e_prev, y3, yleft, yright)
 
         ! do i=1,size(yleft)
         !     print*,i,yleft(i),yright(i)
         ! enddo
-
-        ! do i=1,1000
-        !     call shoot(h, e_prev, y3, yleft, yright)
         
-        !     call normalise(a, b, h, yleft)
-        !     call normalise(a, b, h, yright)
+        protection = n * 30
+
+        do i=1, protection
+            call shoot(h, e_prev, y3, yleft, yright)
         
-        !     call correct(h, yleft, yright, e_prev, e_next)
+            call normalise(h, yleft, yleft_norm)
+            call normalise(h, yright, yright_norm)
 
-        !     print*,'voor',e_prev,e_next,e_next-e_prev,i
+            
+            call correct(h, yleft_norm, yright_norm, e_prev, e_next)
 
-        !     if ( abs( e_next - e_prev ) < eps) then 
-        !         print*,'Exit---',e_prev,e_next,e_next-e_prev,i
-        !         exit
-        !     endif
-        !     print*,'daar',e_prev,e_next,e_next-e_prev,i
-        !     e_prev = e_next
-        !     ! print*,'daarna',e_prev,e_next,e_next-e_prev,i
-        ! end do
+            ! call out(e_prev)
 
-        ! call out(mesh)
+            ! print*,'vo:',e_prev,e_next,abs(e_next-e_prev),i
+
+            if ( abs( e_next - e_prev ) < eps) then 
+                ! print*,'Exit---',e_prev,e_next,abs(e_next-e_prev),i
+                exit
+            end if
+            ! print*,'da:',e_prev,e_next,abs(e_next-e_prev),i
+
+            e_prev = e_next
+
+            if (i == protection) then 
+                print *, 'Something went wrong:'
+                print *, ' the eigenvalues should have converged by now'
+            end if
+        end do
+        ! call out(e_next)
+
+        allocate(y( (size(yleft_norm)-1) *2 ) )
+
+        do i=1, size(yleft_norm)-1
+            y(i) = yleft_norm(i)
+        end do
+
+        do i=1, size(yright_norm)-1
+            y( i + size(yright_norm)-1 ) = yright_norm( size(yright_norm) - i )
+        end do
+
+        
+
+        call out(y)
+    
+        ! call out(e_next)
+        
+        ! do i=1, size(yleft)
+        !     print*,y3(i),yleft(i),yright(i)
+        ! enddo
 
     end subroutine solve
 
@@ -99,8 +126,7 @@ contains
         ! The +1 is needed for the derivative, which needs a value at x_m + 1
         allocate( yleft( m+1 ), yright( m+1 ) )
     
-        yleft(1) = y(1); yleft(2) = y(2)
-    
+        yleft(1)  = y(1); yleft(2)  = y(2)
         yright(1) = y(n); yright(2) = y(n-1)
 
         ! The -2 is there because the first 3 terms are determined when i=0 and the size
@@ -112,20 +138,11 @@ contains
         do i=0, m-2
             yright(3+i) = -yright(1+i)  -2._8* h**2 * e * yright(2+i) +  2._8* yright(2+i)
         end do
-
-        do i=1, m+1
-            print*,y(i),yleft(i),yright(i)
-        enddo
         
-        
-
-        
-
-        ! do i=0, m
-        !     yright(3+i) = -yright(1+i)  -2._8* h**2 * e * yright(2+i) +  2._8* yright(2+i)
-        ! end do
-        ! print*,k
-        
+        ! do i=1, m+1
+        !     print*,y(i),yleft(i),yright(i)
+        ! enddo
+        ! print*,'\'
     
     end subroutine shoot
 
@@ -141,26 +158,30 @@ contains
         real(8), intent(in)  :: h           ! Distance between 2 grid points
         real(8), intent(out) :: e_next      ! New eigenvalue
 
-        integer              :: x_m         ! Middle of the interval
+        integer              :: m ,i        ! Middle of the interval
         real(8)              :: corr        ! Correction difference
         real(8)              :: yleft_diff  ! Derivative at x_m from outward solution
         real(8)              :: yright_diff ! Derivative at x_m from inward solution
         real(8)              :: yleft_int   ! Integral of outward solution^2
         real(8)              :: yright_int  ! Integral of inward solution^2
 
-        x_m = size(yleft) - 1
+        m = size(yleft) - 1
 
         call derivative(h, yleft, yleft_diff)
         call derivative(h, yright, yright_diff)
 
-        call newton_cotes(yleft**2, h, 1, x_m, yleft_int)
-        call newton_cotes(yright**2, h, 1, x_m, yright_int)
+        call newton_cotes(yleft(:m)**2, h, 1, size(yleft), yleft_int)
+        call newton_cotes(yright(:m)**2, h, 1, size(yright), yright_int)
 
-        ! call out(yright_int)
+        ! do i=1,m
+        !     print*,yleft(i),yright(i)
+        ! enddo
+        ! call out(m)
         ! call out(yleft_int)
-
-        corr = .5_8 * ( yright_diff / yright(x_m) - yleft_diff / yleft(x_m) ) &
-               * ( 1._8 / ( yleft_int / yleft(x_m)**2 + yright_int / yright(x_m)**2 ) )
+        ! call out(yright_int)
+        
+        corr = .5_8 * ( yright_diff / yright(m) - yleft_diff / yleft(m) ) &
+               * ( 1._8 / ( yleft_int / yleft(m)**2 + yright_int / yright(m)**2 ) )
 
         e_next = e_prev - corr
 

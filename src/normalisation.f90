@@ -1,9 +1,10 @@
 ! Shooting project - Milad Osman
-!
+! Normalises solutions 
 
 module normalisation
 
     use integration
+    use output
 
     implicit none
     save
@@ -12,22 +13,24 @@ module normalisation
     
 contains
 
-    subroutine normalise(a, b, h, y)
+    subroutine normalise(h, y, ynorm)
 
-        integer, intent(in)    :: a, b     ! Starting and ending point
-        real(8), intent(in)    :: h        ! Distance between 2 grid points
-        real(8), intent(inout) :: y(:)     ! Function to be normalised
+        real(8), intent(in)               :: h        ! Distance between 2 grid points
+        real(8), intent(in)               :: y(:)     ! Function to be normalised
+        real(8), intent(out), allocatable :: ynorm(:) ! Normalised function
         
-        real(8)                :: integral ! Integral needed for normalisation
-        real(8)                :: norm     ! Normalisation factor
+        real(8)                           :: integral ! Integral needed for normalisation
+        real(8)                           :: norm     ! Normalisation factor
 
-        y = abs(y**2)
+        allocate( ynorm( size(y) ))
 
-        call newton_cotes(y, h, a, b, integral)
+        ynorm = abs(y**2)
 
-        norm = sqrt( 1._8 / integral )
+        call newton_cotes(ynorm, h, 1, size(ynorm), integral)
 
-        y = y * norm
+        norm = sqrt( abs( 1._8 / integral ) )
+
+        ynorm = ynorm * norm
 
     end subroutine normalise
     

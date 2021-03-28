@@ -8,11 +8,10 @@ module output
     private 
     public out, plotsave
 
-    ! Overloaded interface for printing
+    ! Overloaded interface for easier printing, for numbers only
     interface out
         module procedure integer_output
         module procedure real_output
-        module procedure character_output
         module procedure one_d_array
         module procedure two_d_array
     end interface 
@@ -43,22 +42,9 @@ contains
 
  !------------------------------------------------!
 
-    !!!!**!!!**!!!!!
-    subroutine character_output(a)
-
-        ! Prints characters
-
-        character(:), allocatable :: a 
-
-        print *, a
-
-    end subroutine character_output
-
- !------------------------------------------------!
-
     subroutine one_d_array(a)
 
-        ! Prints 1 dimenstional array
+        ! Prints 1 dimenstional array as column
 
         real(8), intent(in) :: a(:)
         
