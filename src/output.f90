@@ -19,8 +19,9 @@ module output
     
 contains
     
-    ! Prints integer
     subroutine integer_output(a)
+
+        ! Prints integer
 
         integer, intent(in) :: a 
 
@@ -30,8 +31,9 @@ contains
 
  !------------------------------------------------!
     
-    ! Prints real
     subroutine real_output(a)
+
+        ! Prints real
 
         real(8), intent(in) :: a 
 
@@ -41,8 +43,10 @@ contains
 
  !------------------------------------------------!
 
-    ! Prints characters
+    !!!!**!!!**!!!!!
     subroutine character_output(a)
+
+        ! Prints characters
 
         character(:), allocatable :: a 
 
@@ -52,8 +56,9 @@ contains
 
  !------------------------------------------------!
 
-    ! Prints 1 dimenstional array
     subroutine one_d_array(a)
+
+        ! Prints 1 dimenstional array
 
         real(8), intent(in) :: a(:)
         
@@ -67,8 +72,9 @@ contains
 
  !------------------------------------------------!
 
-    ! Prints 2 dimenstional array
     subroutine two_d_array(a)
+
+        ! Prints 2 dimenstional array
 
         real(8), intent(in) :: a(:,:)
         
@@ -82,8 +88,9 @@ contains
 
  !------------------------------------------------!
 
-    !
     subroutine save()
+
+        !
 
  
 
@@ -91,16 +98,18 @@ contains
     
  !------------------------------------------------!  
 
-    !
     subroutine plot()
+
+        !
 
 
     end subroutine plot
 
  !------------------------------------------------!
 
-    ! 
     subroutine plotsave()
+
+        !
 
 
     end subroutine plotsave

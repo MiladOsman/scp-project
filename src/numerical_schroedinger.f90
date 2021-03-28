@@ -17,82 +17,123 @@ module numerical_schroedinger
     
 contains
 
-    !
     subroutine solve(a, b, n, e, y)
 
+        !
+
         integer, intent(in)               :: a, b      ! The start and end point of the interval
-        integer, intent(in)               :: n        ! Number of points the grid should have
+        integer, intent(in)               :: n         ! Number of points the grid should have
         real(8), intent(out)              :: e         ! Final eigenvalue
         real(8), intent(out), allocatable :: y(:)      ! Final eigenvector
         
         real(8)                           :: h         ! Space between 2 grid points
         real(8), allocatable              :: mesh(:)   ! Discretised space
-        real(8)                           :: e3        ! Eigenvalue from threepoint
+        real(8)                           :: e_prev    ! Eigenvalue from threepoint
         real(8), allocatable              :: y3(:)     ! Eigenvector from threepoint
         real(8), allocatable              :: yleft(:)  ! Inward eigenvector on subinterval
         real(8), allocatable              :: yright(:) ! Outward eigenvector on subinterval
         integer i
         real(8) e_next
+        real(8)                           :: eps = 1d-15 !
+
+        ! call out(eps)
+
+        ! allocate( yleft(6), yright(6) )
 
         call makegrid(a, b, n, h, mesh)
 
-        call threepoint(n, h, e3, y3)
-    
-        call shoot(h, e3, y3, yleft, yright)
+        call threepoint(n, h, e_prev, y3)
+
+        ! call out(e_prev)
+        call shoot(h, e_prev, y3, yleft, yright)
 
         ! do i=1,size(yleft)
         !     print*,i,yleft(i),yright(i)
         ! enddo
+
+        ! do i=1,1000
+        !     call shoot(h, e_prev, y3, yleft, yright)
         
-        call normalise(a, b, h, yleft)
-        call normalise(a, b, h, yright)
+        !     call normalise(a, b, h, yleft)
+        !     call normalise(a, b, h, yright)
         
-        call correct(h, yleft, yright, e3, e_next)
+        !     call correct(h, yleft, yright, e_prev, e_next)
+
+        !     print*,'voor',e_prev,e_next,e_next-e_prev,i
+
+        !     if ( abs( e_next - e_prev ) < eps) then 
+        !         print*,'Exit---',e_prev,e_next,e_next-e_prev,i
+        !         exit
+        !     endif
+        !     print*,'daar',e_prev,e_next,e_next-e_prev,i
+        !     e_prev = e_next
+        !     ! print*,'daarna',e_prev,e_next,e_next-e_prev,i
+        ! end do
+
+        ! call out(mesh)
 
     end subroutine solve
 
  !------------------------------------------------!
 
-    ! Makes trail eigenvectors between x = a and x = x_m + 1 and
-    ! x = x_m - 1 and x = b
-    subroutine shoot(h, e, y, y_left, y_right)
+    subroutine shoot(h, e, y, yleft, yright)
 
-        real(8), intent(in)               :: y(:)       ! Eigenvector from threepoint
-        real(8), intent(in)               :: h          ! Distance between 2 grid points
-        real(8), intent(in)               :: e          ! Estimated eigenvalue by threepoint
-        real(8), intent(out), allocatable :: y_left(:)  ! Outward trial solution
-        real(8), intent(out), allocatable :: y_right(:) ! Inward trial solution
+        ! Makes trail eigenvectors between y(a) and y(x_m +1) and
+        ! x = x_m - 1 and x = b
 
-        integer                           :: i          ! Loop index
-        integer                           :: n          ! Size of eigenvector from threepoint   
-        real(8)                           :: m          ! Middle point of interval
+        real(8), intent(in)               :: y(:)      ! Eigenvector from threepoint
+        real(8), intent(in)               :: h         ! Distance between 2 grid points
+        real(8), intent(in)               :: e         ! Estimated eigenvalue by threepoint
+        real(8), intent(out), allocatable :: yleft(:)  ! Outward trial solution
+        real(8), intent(out), allocatable :: yright(:) ! Inward trial solution
+
+        integer                           :: i         ! Loop index
+        integer                           :: n         ! Size of eigenvector from threepoint   
+        integer                           :: m         ! Matching point
 
         ! This way the number of grid points does not have to be passed separately 
         n = size(y)
 
-        m = ceiling( dble(n) / 2._8 ) 
-        ! print*,m,int(m)+1,int(m/2)+1
-        
+        m = n / 2
+    
         ! The +1 is needed for the derivative, which needs a value at x_m + 1
-        allocate( y_left( int(m)+1 ), y_right( int(m)+1 ) )
+        allocate( yleft( m+1 ), yright( m+1 ) )
+    
+        yleft(1) = y(1); yleft(2) = y(2)
+    
+        yright(1) = y(n); yright(2) = y(n-1)
 
-        y_left(1) = y(1)  ; y_left(2) = y(2)
-        y_right(1) = y(n) ; y_right(2) = y(n-1)
+        ! The -2 is there because the first 3 terms are determined when i=0 and the size
+        ! of the array is m+1
+        do i=0, m-2
+            yleft(3+i) = -yleft(1+i) -2._8* h**2 * e * yleft(2+i) + 2._8* yleft(2+i)
+        enddo
        
-        do i=0, 4
-            y_left(3+i) = -y_left(1+i)  -2._8* h**2 * e * y_left(2+i) +  2._8* y_left(2+i)
+        do i=0, m-2
+            yright(3+i) = -yright(1+i)  -2._8* h**2 * e * yright(2+i) +  2._8* yright(2+i)
         end do
 
-        do i=0, 4
-            y_right(3+i) = -y_right(1+i)  -2._8* h**2 * e * y_right(2+i) +  2._8* y_right(2+i)
-        end do
+        do i=1, m+1
+            print*,y(i),yleft(i),yright(i)
+        enddo
+        
+        
+
+        
+
+        ! do i=0, m
+        !     yright(3+i) = -yright(1+i)  -2._8* h**2 * e * yright(2+i) +  2._8* yright(2+i)
+        ! end do
+        ! print*,k
+        
     
     end subroutine shoot
 
  !------------------------------------------------!
 
-    !
     subroutine correct(h, yleft, yright, e_prev, e_next)
+
+        !
 
         real(8), intent(in)  :: yleft(:)    ! Outward trial solution
         real(8), intent(in)  :: yright(:)   ! Inward trial solution
@@ -115,8 +156,8 @@ contains
         call newton_cotes(yleft**2, h, 1, x_m, yleft_int)
         call newton_cotes(yright**2, h, 1, x_m, yright_int)
 
-        call out(yright_diff)
-        call out(yleft_diff)
+        ! call out(yright_int)
+        ! call out(yleft_int)
 
         corr = .5_8 * ( yright_diff / yright(x_m) - yleft_diff / yleft(x_m) ) &
                * ( 1._8 / ( yleft_int / yleft(x_m)**2 + yright_int / yright(x_m)**2 ) )

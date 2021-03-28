@@ -1,4 +1,4 @@
-! Shooting project - Milad Osman
+! Dependency of shooting project - Milad Osman
 ! I did not write this module
 
 module integration

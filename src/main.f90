@@ -12,7 +12,7 @@ program Shooting_project_Milad_Osman
 
     a = 0
     b = 1
-    n = 11
+    n = 50
 
     call solve(a, b, n, e, y)
     

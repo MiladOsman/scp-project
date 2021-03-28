@@ -17,15 +17,15 @@ contains
 
         integer, intent(in)               :: n            ! Size of grid
         real(8), intent(in)               :: h            ! Distance between 2 grid points
-        real(8), intent(out), allocatable :: y(:)         ! Used for integration
-        real(8), intent(out)              :: e            ! Used for integration
+        real(8), intent(out), allocatable :: y(:)         ! Single eigenvector
+        real(8), intent(out)              :: e            ! Single eigenvalue
 
         integer                           :: i            ! Loop index
         real(8)                           :: s(n,n)       ! S matrix
         real(8)                           :: v(n,n)       ! V matrix
         real(8)                           :: l(n,n)       ! L matrix
-        real(8)                           :: values(n)    ! Eigenvalues
-        real(8)                           :: vectors(n,n) ! Eigenvectors
+        real(8)                           :: values(n)    ! All eigenvalues
+        real(8)                           :: vectors(n,n) ! All eigenvectors
         character(5)                      :: numbers      ! Used for the format string
 
         allocate( y(n) )
@@ -41,6 +41,7 @@ contains
             s(i+1,i) = 1._8
         end do
 
+        ! Because the potential is v(x) = 0
         v = 0._8
 
         l = -(1._8 / ( 2._8 * h**2) ) * s + v
