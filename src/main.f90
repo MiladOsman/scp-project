@@ -1,30 +1,20 @@
 program Shooting_project_Milad_Osman
     
-    use grid
-    use precondition
-    use shooting
+    use input
+    use numerical_schroedinger
     use output
-    use normalisation
     
     implicit none
     
-    real(8), allocatable :: grid(:), y(:), y_left(:), y_right(:)
-    real(8) h,e
     integer :: a,b,n,i
+    real(8) e
+    real(8), allocatable :: y(:)
 
     a = 0
     b = 1
     n = 11
 
-    call makegrid(a, b, n, h, grid)
-
-    call threepoint(n, h, e, y)
-
-    call trial(h, e, y, y_left, y_right)
-
-
-    call normalise(a, b, h, y_left)
-    call normalise(a, b, h, y_right)
- 
+    call solve(a, b, n, e, y)
+    
 
 end program Shooting_project_Milad_Osman

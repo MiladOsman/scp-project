@@ -6,7 +6,7 @@ module output
     implicit none
     save
     private 
-    public out, save, plot
+    public out, plotsave
 
     ! Overloaded interface for printing
     interface out
@@ -96,6 +96,16 @@ contains
 
 
     end subroutine plot
+
+ !------------------------------------------------!
+
+    ! 
+    subroutine plotsave()
+
+
+    end subroutine plotsave
+    
+ !------------------------------------------------!
 
 end module output
 

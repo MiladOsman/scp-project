@@ -15,18 +15,18 @@ contains
 
     subroutine threepoint(n, h, e, y)
 
-        integer, intent(in)  :: n            ! Size of grid
-        real(8), intent(in)  :: h            ! Distance between 2 grid points
+        integer, intent(in)               :: n            ! Size of grid
+        real(8), intent(in)               :: h            ! Distance between 2 grid points
         real(8), intent(out), allocatable :: y(:)         ! Used for integration
-        real(8), intent(out) :: e         ! Used for integration
+        real(8), intent(out)              :: e            ! Used for integration
 
-        integer              :: i            ! Loop index
-        real(8)              :: s(n,n)       ! S matrix
-        real(8)              :: v(n,n)       ! V matrix
-        real(8)              :: l(n,n)       ! L matrix
-        real(8)              :: values(n)    ! Eigenvalues
-        real(8)              :: vectors(n,n) ! Eigenvectors
-        character(5)         :: numbers      ! Used for the format string
+        integer                           :: i            ! Loop index
+        real(8)                           :: s(n,n)       ! S matrix
+        real(8)                           :: v(n,n)       ! V matrix
+        real(8)                           :: l(n,n)       ! L matrix
+        real(8)                           :: values(n)    ! Eigenvalues
+        real(8)                           :: vectors(n,n) ! Eigenvectors
+        character(5)                      :: numbers      ! Used for the format string
 
         allocate( y(n) )
 
