@@ -26,7 +26,6 @@ contains
         real(8)                           :: l(n,n)       ! L matrix
         real(8)                           :: values(n)    ! All eigenvalues
         real(8)                           :: vectors(n,n) ! All eigenvectors
-        character(5)                      :: numbers      ! Used for the format string
 
         allocate( y(n) )
 
@@ -48,20 +47,9 @@ contains
 
         call diagonalize(l,vectors,values)
 
-        ! Turn integer into character for format string
-        ! write(numbers, '(i0)') n
 
-        ! print *,'* Eigenvectors:'
-        ! do i=1,n
-        !     print '('//numbers//'f9.4)', vectors(i,:)
-        ! end do
 
         y = vectors(:,1)
-
-        ! call out(y)
-
-        ! print *, '* Eigenvalues:'
-        ! print '('//numbers//'f10.4)', values
 
         e = values(1)
 

@@ -6,7 +6,7 @@ module output
     implicit none
     save
     private 
-    public out, plotsave
+    public out, save
 
     ! Overloaded interface for easier printing, for numbers only
     interface out
@@ -71,36 +71,34 @@ contains
         end do
 
     end subroutine two_d_array
-
- !------------------------------------------------!
-
-    subroutine save()
-
-        !
-
- 
-
-    end subroutine save
     
  !------------------------------------------------!  
 
-    subroutine plot()
+    subroutine save(e, x, y)
 
-        !
+        real(8), intent(in) :: x(:) ! The x values of what has to be plotted
+        real(8), intent(in) :: y(:) ! The y values of what has to be plotted
+        real(8), intent(in) :: e ! Eigenvalue
 
+        integer :: i                ! Loop index
+        integer :: data             ! Name for data file to be opened
+        integer :: plt              ! Name for plot file to be opened
 
-    end subroutine plot
+        open(newunit=data, file='eigenstate.txt')
 
- !------------------------------------------------!
+        ! Store the values in the opened file
+        write(data,*) 'Eigenvalue:'
+        write(data,*) e
+        write(data,*) '-----------'
 
-    subroutine plotsave()
+        write(data,*) 'x values, wavefunction:'
+        do i=1, size(x)
+            write(data,*) x(i), y(i)
+        end do
 
-        !
+        close(data)
 
-
-    end subroutine plotsave
-    
- !------------------------------------------------!
+    end subroutine save
 
 end module output
 

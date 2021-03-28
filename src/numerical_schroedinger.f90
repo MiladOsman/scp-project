@@ -3,7 +3,6 @@
 
 module numerical_schroedinger
 
-    use grid
     use precondition
     use differentiation
     use integration
@@ -17,37 +16,28 @@ module numerical_schroedinger
     
 contains
 
-    subroutine solve(a, b, n, e_next, y)
+    subroutine solve(a, b, n, e_next, y_norm)
 
-        !
+        ! Main subroutine
 
         integer, intent(in)               :: a, b           ! The start and end point of the interval
-        integer, intent(in)               :: n              ! Number of points the grid should have
+        integer, intent(in)               :: n              ! Number of points the grid should have 
         real(8), intent(out)              :: e_next         ! Final eigenvalue
-        real(8), intent(out), allocatable :: y(:)           ! Final eigenvector
+        real(8), intent(out), allocatable :: y_norm(:)           ! Final eigenvector
         
         real(8)                           :: h              ! Space between 2 grid points
-        real(8), allocatable              :: mesh(:)        ! Discretised space
         real(8)                           :: e_prev         ! Eigenvalue from threepoint
-        ! real(8)                           :: e_next         ! Eigenvalue after correction
         real(8), allocatable              :: y3(:)          ! Eigenvector from threepoint
         real(8), allocatable              :: yleft(:)       ! Inward eigenvector on subinterval
         real(8), allocatable              :: yright(:)      ! Outward eigenvector on subinterval
         real(8), allocatable              :: yleft_norm(:)  ! Normalised outward eigenvector
         real(8), allocatable              :: yright_norm(:) ! Normalised inward eigenvector
+        real(8), allocatable              :: y(:) ! Final eigenvector before normalisation
         integer                           :: i              ! Loop index
-        integer                           :: protection     !
-        real(8)                           :: eps = 1d-15     ! Tolerance 
-
-        call makegrid(a, b, n, h, mesh)
-        
+        integer                           :: protection     ! Limits number of iterations
+        real(8)             :: eps = 1d-15     ! Tolerance
 
         call threepoint(n, h, e_prev, y3)
-
-
-        ! do i=1,size(yleft)
-        !     print*,i,yleft(i),yright(i)
-        ! enddo
         
         protection = n * 30
 
@@ -60,15 +50,7 @@ contains
             
             call correct(h, yleft_norm, yright_norm, e_prev, e_next)
 
-            ! call out(e_prev)
-
-            ! print*,'vo:',e_prev,e_next,abs(e_next-e_prev),i
-
-            if ( abs( e_next - e_prev ) < eps) then 
-                ! print*,'Exit---',e_prev,e_next,abs(e_next-e_prev),i
-                exit
-            end if
-            ! print*,'da:',e_prev,e_next,abs(e_next-e_prev),i
+            if ( abs( e_next - e_prev ) < eps) exit
 
             e_prev = e_next
 
@@ -77,7 +59,6 @@ contains
                 print *, ' the eigenvalues should have converged by now'
             end if
         end do
-        ! call out(e_next)
 
         allocate(y( (size(yleft_norm)-1) *2 ) )
 
@@ -89,15 +70,7 @@ contains
             y( i + size(yright_norm)-1 ) = yright_norm( size(yright_norm) - i )
         end do
 
-        
-
-        call out(y)
-    
-        ! call out(e_next)
-        
-        ! do i=1, size(yleft)
-        !     print*,y3(i),yleft(i),yright(i)
-        ! enddo
+        call normalise(h, y, y_norm)
 
     end subroutine solve
 
@@ -138,11 +111,6 @@ contains
         do i=0, m-2
             yright(3+i) = -yright(1+i)  -2._8* h**2 * e * yright(2+i) +  2._8* yright(2+i)
         end do
-        
-        ! do i=1, m+1
-        !     print*,y(i),yleft(i),yright(i)
-        ! enddo
-        ! print*,'\'
     
     end subroutine shoot
 
@@ -150,7 +118,7 @@ contains
 
     subroutine correct(h, yleft, yright, e_prev, e_next)
 
-        !
+        ! Corrects the eigenvalues
 
         real(8), intent(in)  :: yleft(:)    ! Outward trial solution
         real(8), intent(in)  :: yright(:)   ! Inward trial solution
@@ -172,20 +140,12 @@ contains
 
         call newton_cotes(yleft(:m)**2, h, 1, size(yleft), yleft_int)
         call newton_cotes(yright(:m)**2, h, 1, size(yright), yright_int)
-
-        ! do i=1,m
-        !     print*,yleft(i),yright(i)
-        ! enddo
-        ! call out(m)
-        ! call out(yleft_int)
-        ! call out(yright_int)
         
         corr = .5_8 * ( yright_diff / yright(m) - yleft_diff / yleft(m) ) &
                * ( 1._8 / ( yleft_int / yleft(m)**2 + yright_int / yright(m)**2 ) )
 
         e_next = e_prev - corr
 
-        ! print*,corr,e_prev,e_next
     end subroutine correct
 
 end module numerical_schroedinger
